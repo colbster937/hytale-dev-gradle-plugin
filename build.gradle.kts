@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "net.janrupf"
-version = "1.0-SNAPSHOT"
+version = "0.1.0"
 
 val agentProject = project(":agent")
 
@@ -41,7 +41,7 @@ gradlePlugin {
             implementationClass = "net.janrupf.gradle.hytale.dev.HytaleDevPlugin"
             displayName = "Hytale Dev"
             description = "A Gradle plugin for Hytale mod/plugin development."
-            tags.set(listOf("hytale", "modding", "plugin", "development"))
+            tags.set(listOf("hytale", "modding", "development"))
         }
     }
 }
