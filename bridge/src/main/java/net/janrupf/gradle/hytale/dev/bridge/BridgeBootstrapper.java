@@ -44,13 +44,23 @@ public final class BridgeBootstrapper {
             client = new DevBridgeClient(portNumber, token);
             subscriber = new LogSubscriber(client);
 
-            // Connect and subscribe (async)
-            client.connect();
+            // Connect synchronously (wait for connection before subscribing to logs)
+            // This ensures we don't miss early logs while connection is being established
+            boolean connected = client.connectBlocking(5, java.util.concurrent.TimeUnit.SECONDS);
+            if (!connected) {
+                System.err.println("[HytaleDev] Failed to connect to IDE bridge (timeout)");
+                return;
+            }
+
+            // Now subscribe to logs - connection is established
             subscriber.subscribe();
 
             System.out.println("[HytaleDev] Bridge initialized on port " + portNumber);
         } catch (NumberFormatException e) {
             System.err.println("[HytaleDev] Invalid bridge port number: " + port);
+        } catch (InterruptedException e) {
+            System.err.println("[HytaleDev] Bridge connection interrupted");
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
             System.err.println("[HytaleDev] Failed to initialize bridge: " + e.getMessage());
             e.printStackTrace();
